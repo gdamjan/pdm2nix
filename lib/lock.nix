@@ -37,7 +37,6 @@ let
     environ = pep508.mkEnviron python;
     fetchPDMPackage = python.pkgs.callPackage self.fetchPDMPackage {
       # Get from Flake attribute first, falling back to regular attribute access
-      fetchFromPypi = pyproject-nix.fetchers.${python.system}.fetchFromPypi or pyproject-nix.fetchers.fetchFromPypi;
       fetchFromLegacy = pyproject-nix.fetchers.${python.system}.fetchFromLegacy or pyproject-nix.fetchers.fetchFromLegacy;
     };
     mkEditablePackage = callPackage editable.mkEditablePackage { };
@@ -153,8 +152,8 @@ in
     Fetch a package from pdm.lock
     */
   fetchPDMPackage =
-    { fetchFromPypi
-    , fetchurl
+    { fetchurl
+    , fetchPypi
     , fetchFromLegacy
     }: {
          # The specific package segment from pdm.lock
@@ -234,7 +233,7 @@ in
 
         in
         if sources' == [ ] then
-          (fetchFromPypi {
+          (fetchPypi {
             pname = package.name;
             inherit (package) version;
             inherit (file) file hash;
